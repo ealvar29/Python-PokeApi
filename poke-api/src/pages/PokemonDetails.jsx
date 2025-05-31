@@ -1,10 +1,14 @@
+import { generatePokemonDescription } from '../Services/textService';
+import { generatePokemonImage } from '../Services/imageService'; // ✅ NEW
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPokemonDetails } from '../services/pokemonService';
+import { getPokemonDetails } from '../Services/pokemonService';
 import Loader from '../components/Loader';
 
 const PokemonDetails = () => {
   const { id } = useParams();
+  const [aiDescription, setAiDescription] = useState('');
+  const [aiImageUrl, setAiImageUrl] = useState(''); // ✅ NEW
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +19,13 @@ const PokemonDetails = () => {
         setLoading(true);
         const data = await getPokemonDetails(id);
         setPokemon(data);
+
+        const description = await generatePokemonDescription(data.name);
+        setAiDescription(description);
+
+        const imageUrl = await generatePokemonImage(data.name); // ✅ NEW
+        setAiImageUrl(imageUrl); // ✅ NEW
+
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch Pokémon details. Please try again.');
@@ -29,7 +40,6 @@ const PokemonDetails = () => {
   if (error) return <div className="alert alert-danger">{error}</div>;
   if (!pokemon) return <div className="alert alert-info">No Pokémon found.</div>;
 
-  // Extract English description
   const englishDescription = pokemon.species.flavor_text_entries.find(
     entry => entry.language.name === 'en'
   )?.flavor_text.replace(/\\f|\\n/g, ' ') || 'No description available.';
@@ -40,7 +50,7 @@ const PokemonDetails = () => {
         <div className="col-md-6">
           <div className="card mb-4">
             <div className="card-body text-center">
-              <img 
+              <img
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
                 alt={pokemon.name}
                 className="img-fluid mb-3"
@@ -49,8 +59,8 @@ const PokemonDetails = () => {
               <h1 className="text-capitalize">{pokemon.name}</h1>
               <div className="d-flex justify-content-center mb-3">
                 {pokemon.types.map(type => (
-                  <span 
-                    key={type} 
+                  <span
+                    key={type}
                     className={`badge bg-${type} me-2 text-capitalize`}
                     style={{ fontSize: '1rem', padding: '0.5rem' }}
                   >
@@ -75,12 +85,12 @@ const PokemonDetails = () => {
                     <span>{stat.value}</span>
                   </div>
                   <div className="progress">
-                    <div 
-                      className="progress-bar" 
-                      role="progressbar" 
+                    <div
+                      className="progress-bar"
+                      role="progressbar"
                       style={{ width: `${Math.min(100, (stat.value / 150) * 100)}%` }}
-                      aria-valuenow={stat.value} 
-                      aria-valuemin="0" 
+                      aria-valuenow={stat.value}
+                      aria-valuemin="0"
                       aria-valuemax="150"
                     ></div>
                   </div>
@@ -101,7 +111,22 @@ const PokemonDetails = () => {
             <div className="col-md-6">
               <p><strong>Height:</strong> {pokemon.height / 10}m</p>
               <p><strong>Weight:</strong> {pokemon.weight / 10}kg</p>
+
+              {/* ✅ AI Description Section */}
+              <div className="card mt-4">
+                <div className="card-header">
+                  <h3>AI Generated Description</h3>
+                </div>
+                <div className="card-body">
+                  {aiDescription ? (
+                    <p>{aiDescription}</p>
+                  ) : (
+                    <p>Loading AI-generated description...</p>
+                  )}
+                </div>
+              </div>
             </div>
+
             <div className="col-md-6">
               <p><strong>Abilities:</strong></p>
               <ul>
@@ -114,32 +139,28 @@ const PokemonDetails = () => {
         </div>
       </div>
 
-      {/* Placeholder sections for AI features - we'll implement these next */}
+      {/* ✅ AI Image Section */}
       <div className="row">
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <div className="card-header">
-              <h3>AI Generated Description</h3>
-            </div>
-            <div className="card-body">
-              <p>Coming soon: AI-generated description using text generation API...</p>
-            </div>
-          </div>
-        </div>
-        
         <div className="col-md-6">
           <div className="card mb-4">
             <div className="card-header">
               <h3>AI Generated Image</h3>
             </div>
             <div className="card-body text-center">
-              <p>Coming soon: AI-generated image using image generation API...</p>
+              {aiImageUrl ? (
+                <img
+                  src={aiImageUrl}
+                  alt={`AI-generated ${pokemon.name}`}
+                  className="img-fluid rounded shadow"
+                />
+              ) : (
+                <p className="ai-loading">Generating AI image...</p>
+              )}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="row">
+        {/* Keep these for future features */}
         <div className="col-md-6">
           <div className="card mb-4">
             <div className="card-header">
@@ -150,7 +171,9 @@ const PokemonDetails = () => {
             </div>
           </div>
         </div>
-        
+      </div>
+
+      <div className="row">
         <div className="col-md-6">
           <div className="card mb-4">
             <div className="card-header">
