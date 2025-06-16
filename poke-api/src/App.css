@@ -1,11 +1,28 @@
 /* src/App.css */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
+.App {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+}
+
+.view-details {
+  color: white;
+}
 body {
   font-family: "Poppins", sans-serif;
   background-color: #f8f9fa;
+  color: black;
 }
 
+.pokemon-list {
+  margin-bottom: 35px;
+}
 .navbar {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
