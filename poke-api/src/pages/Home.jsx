@@ -6,6 +6,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import PokemonForm from "../components/PokemonForm";
+import ChatBot from "../components/Chatbot";
 
 const Home = () => {
   const [pokemonList, setPokemonList] = useState([]);
@@ -50,6 +51,7 @@ const Home = () => {
   return (
     <div>
       <PokemonForm />
+      <ChatBot />
       <h1 className="text-center mb-4">Pokémon Explorer</h1>
       <p className="text-center mb-4">
         Discover Pokémon with AI-enhanced features! Click on a Pokémon to see
