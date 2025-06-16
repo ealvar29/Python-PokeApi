@@ -51,7 +51,7 @@ const Home = () => {
   return (
     <div>
       <PokemonForm />
-      {/* <ChatBot /> */}
+      <ChatBot />
       <h1 className="text-center mb-4">Pokémon Explorer</h1>
       <p className="text-center mb-4">
         Discover Pokémon with AI-enhanced features! Click on a Pokémon to see

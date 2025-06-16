@@ -6,10 +6,10 @@ const ChatBot = () => {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize OpenAI (like waking up the robot)
+  // For Vite, use import.meta.env instead of process.env
   const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true, // Only for demo - see security note below!
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY, // Note: VITE_ prefix!
+    dangerouslyAllowBrowser: true,
   });
 
   // Function to send message to ChatGPT
@@ -22,7 +22,7 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/poke-apisrc/functionschat.js", {
+      const response = await fetch("/.netlify/functions/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [...messages, userMessage] }),
